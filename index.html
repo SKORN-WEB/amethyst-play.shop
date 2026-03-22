@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Amethyst - Донат</title>
+<link href="https://fonts.cdnfonts.com/css/minecraft-4" rel="stylesheet">
+<style>
+body {
+    margin: 0;
+    font-family: 'Minecraft', sans-serif;
+    background: url('fon.png') no-repeat center center fixed;
+    background-size: cover;
+    color: white;
+    overflow-x: hidden;
+}
+
+/* Частицы */
+.particles { position: fixed; width: 100%; height: 100%; overflow: hidden; z-index: -1; }
+.particle { position: absolute; width: 6px; height: 6px; background: #9b4dd7; border-radius: 50%; opacity: 0.7; animation: float 10s linear infinite; box-shadow: 0 0 10px #7a22b8; }
+@keyframes float { 0% { transform: translateY(100vh) scale(0.5); opacity: 0; } 50% { opacity: 0.8; } 100% { transform: translateY(-10vh) scale(1); opacity: 0; } }
+
+/* HEADER */
+.header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; padding: 30px 40px; }
+.logo img { height: 210px; filter: drop-shadow(0 0 15px #7a22b8); transition: 0.3s; }
+.logo img:hover { transform: scale(1.05); }
+
+/* MENU BUTTON */
+.menu button {
+    margin-left: 15px;
+    padding: 10px 15px;
+    background: #38116b;
+    border: 2px solid #7a22b8;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 20px;
+}
+.menu button:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 0 15px #a855f7;
+    background: #5c1fa0;
+}
+.menu button:active {
+    transform: translateY(0) scale(0.98);
+    background: #7a22b8;
+}
+
+/* MAIN */
+.container { width: 100%; max-width: 500px; margin: 20px auto; text-align: center; animation: fadeIn 1s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Input */
+input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #7a22b8;
+    border-radius: 12px;
+    background: #38116b;
+    color: #e0e0e0;
+    font-family: 'Minecraft', sans-serif;
+    font-size: 16px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+/* Placeholder */
+input::placeholder {
+    color: #f0f0f0;
+    opacity: 1; 
+    text-align: center; 
+}
+
+/* Dropdown */
+.dropdown {
+    background: #38116b;
+    padding: 12px;
+    cursor: pointer;
+    position: relative;
+    border-radius: 12px;
+    border: 1px solid #7a22b8;
+    transition: 0.2s ease;
+    color: #e0e0e0;
+    text-align: center;
+}
+.dropdown:hover { box-shadow: 0 0 12px #a855f7; background: #5c1fa0; }
+.dropdown:active { background: #7a22b8; }
+.arrow { position: absolute; right: 15px; transition: transform 0.3s ease; }
+.dropdown.active .arrow { transform: rotate(180deg); }
+
+/* Items */
+.items { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, transform 0.4s ease; transform-origin: top; background: #38116b; border-radius: 12px; margin-top: 5px; border: 1px solid #7a22b8; }
+.items.open { max-height: 300px; transform: scaleY(1); overflow-y: auto; }
+.items::-webkit-scrollbar { width: 6px; }
+.items::-webkit-scrollbar-thumb { background: #7a22b8; border-radius: 3px; }
+.items::-webkit-scrollbar-track { background: transparent; }
+
+.item { padding: 12px; border-bottom: 1px solid #2a0050; cursor: pointer; transition: all 0.3s ease; color: #e0e0e0; }
+.item:first-child { border-top-left-radius: 12px; border-top-right-radius: 12px; }
+.item:last-child { border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; border-bottom: none; }
+.item:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 0 15px #a855f7; background: #5c1fa0; }
+.item:active { transform: translateY(0) scale(0.98); background: #7a22b8; }
+.item.selected { background: #7e22ce; box-shadow: 0 0 15px #a855f7; }
+
+/* Buy Button */
+.buy {
+    margin-top: 20px;
+    padding: 15px;
+    width: 100%;
+    background: #38116b;
+    border: 2px solid #7a22b8;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 12px;
+}
+.buy:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 0 20px #a855f7; background: #5c1fa0; }
+.buy:active { transform: translateY(0) scale(0.98); background: #7a22b8; }
+
+/* Server */
+.server { margin-top: 20px; padding: 20px; background: #38116b; border-radius: 15px; border: 1px solid #7a22b8; box-shadow: 0 0 20px #a855f7; }
+
+/* Footer */
+.footer { 
+    margin-top: 15px; 
+    text-align: center; 
+    padding: 10px; 
+    background: #3b0066; 
+    font-size: 14px; 
+    color: #ffffff;
+}
+
+/* Modal */
+.modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.8); width: 600px; max-height: 70vh; background: #38116b; border-radius: 20px; padding: 25px; color: #fff; z-index: 1000; box-shadow: 0 0 25px #7a22b8, 0 0 50px #a855f7; font-family: Arial, sans-serif; opacity: 0; pointer-events: none; transition: transform 0.3s ease, opacity 0.3s ease; }
+.modal.show { opacity: 1; transform: translate(-50%, -50%) scale(1); pointer-events: auto; }
+
+.modal-content { overflow-y: auto; max-height: 60vh; padding-right: 10px; white-space: pre-wrap; }
+.modal-content::-webkit-scrollbar { width: 6px; }
+.modal-content::-webkit-scrollbar-thumb { background: #a855f7; border-radius: 3px; }
+.modal-content::-webkit-scrollbar-track { background: transparent; }
+
+.close-btn { position: absolute; top: -16px; right: -16px; background: #7a22b8; width: 32px; height: 32px; border-radius: 50%; text-align: center; line-height: 32px; font-weight: bold; cursor: pointer; transition: all 0.3s ease; }
+.close-btn:hover { box-shadow: 0 0 15px #a855f7; color: white; }
+
+.agreement-line { display: flex; align-items: center; justify-content: center; margin-top: 15px; gap: 10px; flex-wrap: wrap; }
+.agreement-line input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
+.agreement-line span { cursor: pointer; text-decoration: underline; }
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .header { padding: 20px; flex-direction: column; }
+    .logo img { height: 150px; margin-bottom: 15px; }
+    .menu button { margin: 5px 0; width: 90%; font-size: 16px; }
+    .modal { width: 90%; padding: 20px; }
+    .container { width: 90%; margin: 10px auto; }
+}
+</style>
+</head>
+<body>
+
+<div class="particles" id="particles"></div>
+
+<div class="header">
+    <div class="logo"><img src="logo.png" alt="Amethyst Logo"></div>
+    <div class="menu">
+        <button>Связь с нами</button>
+        <button onclick="openAgreement()">Лицензионное соглашение</button>
+    </div>
+</div>
+
+<div class="container">
+    <input type="text" placeholder="" id="nick">
+    <div class="dropdown" id="dropdown"><span>Выбрать товар</span> <span class="arrow">▼</span></div>
+    <div class="items" id="items">
+        <div class="item" data-price="50">Админка - 50 рублей</div>
+        <div class="item" data-price="9999999">Чпокнуть Саню - 9999999 рублей</div>
+        <div class="item" data-price="0">Поиметь все комьюнити HypeGO - 0 рублей</div>
+    </div>
+    <div class="agreement-line">
+        <input type="checkbox" id="agree"><span onclick="openAgreement()">Я согласен с лицензионным соглашением</span>
+    </div>
+    <button class="buy" onclick="buy()">Купить</button>
+    <div class="server" id="server">Онлайн сервера: 0/100 <br><br> IP: amethyst-play.ru</div>
+</div>
+
+<div class="footer">© Amethyst — Все права защищены<br>ИНН 910616633643, Кияшко Максим Вадимович</div>
+
+<div class="modal" id="agreementModal">
+    <div class="close-btn" onclick="closeAgreement()">×</div>
+    <div class="modal-content">
+<b>ЛИЦЕНЗИОННОЕ СОГЛАШЕНИЕ (ПУБЛИЧНАЯ ОФЕРТА) Amethyst | Servers on Minecraft</b>
+<br><br>
+<b>1. Общие положения</b><br>
+1.1. Настоящее лицензионное соглашение (далее — «Соглашение») регулирует отношения между Администрацией проекта Amethyst | Servers on Minecraft (далее — «Администрация») и пользователем (далее — «Пользователь»), который приобретает внутриигровые привилегии, услуги или виртуальные товары через сайт проекта.<br>
+1.2. Оплачивая услуги, Пользователь автоматически соглашается с условиями данного Соглашения.<br>
+1.3. Соглашение является публичной офертой в соответствии с применимым законодательством.<br><br>
+
+<b>2. Предмет соглашения</b><br>
+2.1. Администрация предоставляет Пользователю ограниченную, неисключительную, непередаваемую лицензию на использование виртуальных товаров и услуг в рамках проекта Amethyst | Servers on Minecraft.<br>
+2.2. Все приобретаемые товары (донат-привилегии, ранги, валюта и т.д.) являются виртуальными и не имеют реальной денежной стоимости вне проекта.<br>
+2.3. Пользователь не приобретает право собственности на какие-либо элементы проекта.<br><br>
+
+<b>3. Права и обязанности сторон</b><br>
+3.1. Пользователь обязуется:<br>
+* Указывать достоверные данные при оплате;<br>
+* Не использовать баги, читы или иные способы получения преимущества;<br>
+* Соблюдать правила проекта.<br>
+3.2. Пользователь имеет право:<br>
+* Получать оплаченные услуги в полном объёме;<br>
+* Обращаться в поддержку при возникновении проблем.<br>
+3.3. Администрация обязуется:<br>
+* Предоставить оплаченные услуги после подтверждения платежа;<br>
+* Поддерживать работоспособность проекта (по возможности).<br>
+3.4. Администрация имеет право:<br>
+* Изменять характеристики донат-услуг без предварительного уведомления;<br>
+* Блокировать аккаунт Пользователя при нарушении правил;<br>
+* Аннулировать привилегии без возврата средств при серьезных нарушениях.<br><br>
+
+<b>4. Оплата и возвраты</b><br>
+4.1. Все платежи являются добровольными пожертвованиями в поддержку проекта Amethyst | Servers on Minecraft.<br>
+4.2. Возврат средств не производится, за исключением случаев, предусмотренных законодательством.<br>
+4.3. Пользователь несет ответственность за правильность введенных данных (никнейма и т.д.).<br><br>
+
+<b>5. Ответственность</b><br>
+5.1. Администрация не несет ответственности за временные сбои, технические неполадки или потерю доступа к проекту.<br>
+5.2. Пользователь несет ответственность за сохранность своего аккаунта.<br><br>
+
+<b>6. Изменение соглашения</b><br>
+6.1. Администрация имеет право в любое время изменять условия данного Соглашения.<br>
+6.2. Актуальная версия всегда доступна на сайте.<br><br>
+
+<b>7. Заключительные положения</b><br>
+7.1. Использование услуг проекта Amethyst | Servers on Minecraft означает полное согласие с данным Соглашением.<br>
+7.2. В случае несогласия Пользователь обязан прекратить использование сервиса.<br><br>
+
+<b>Реквизиты:</b> ИНН 910616633643, Кияшко Максим Вадимович
+    </div>
+</div>
+
+<script>
+// Частицы
+const container = document.getElementById("particles");
+for (let i = 0; i < 40; i++) {
+    let p = document.createElement("div");
+    p.classList.add("particle");
+    p.style.left = Math.random() * 100 + "vw";
+    p.style.animationDuration = (5 + Math.random() * 10) + "s";
+    p.style.animationDelay = Math.random() * 5 + "s";
+    container.appendChild(p);
+}
+
+// Dropdown
+const dropdown = document.getElementById("dropdown");
+const items = document.getElementById("items");
+let selectedItem = null, selectedPrice = 0;
+
+dropdown.addEventListener("click", () => {
+    if (items.classList.contains("open")) {
+        items.style.maxHeight = items.scrollHeight + "px";
+        requestAnimationFrame(() => { items.style.maxHeight = "0"; });
+        items.classList.remove("open");
+        dropdown.classList.remove("active");
+    } else {
+        items.classList.add("open");
+        items.style.maxHeight = "0";
+        requestAnimationFrame(() => { items.style.maxHeight = items.scrollHeight + "px"; });
+        dropdown.classList.add("active");
+    }
+});
+
+document.querySelectorAll(".item").forEach(item => {
+    item.onclick = () => {
+        document.querySelectorAll(".item").forEach(i => i.classList.remove("selected"));
+        item.classList.add("selected");
+        selectedItem = item.innerText;
+        selectedPrice = item.getAttribute("data-price");
+        dropdown.querySelector("span").innerText = selectedItem;
+        items.style.maxHeight = "0";
+        items.classList.remove("open");
+        dropdown.classList.remove("active");
+    }
+});
+
+// Покупка
+function buy() {
+    let nick = document.getElementById("nick").value;
+    if (!nick) return alert("Введите ник!");
+    if (!selectedItem) return alert("Выберите товар!");
+    if (!document.getElementById("agree").checked) return alert("Вы должны согласиться с лицензионным соглашением!");
+    if (selectedPrice == 0) { alert(`Вы выбрали бесплатный товар: ${selectedItem} для ${nick}`); return; }
+    let url = `https://yoomoney.ru/quickpay/confirm.xml?receiver=YOUR_WALLET&formcomment=${encodeURIComponent(selectedItem)}&short-dest=${encodeURIComponent(selectedItem)}&sum=${selectedPrice}&label=${encodeURIComponent(nick)}&quickpay-form=shop`;
+    window.open(url, "_blank");
+}
+
+// Онлайн сервера
+setInterval(() => {
+    let players = Math.floor(Math.random() * 100);
+    document.getElementById("server").innerHTML = `Онлайн сервера: ${players}/100 <br><br> IP: amethyst-play.ru`;
+}, 3000);
+
+// Placeholder
+const input = document.getElementById("nick");
+const placeholderText = "Введите никнейм";
+let phIndex = 0;
+function typePlaceholder() {
+    if (phIndex <= placeholderText.length) {
+        input.setAttribute("placeholder", placeholderText.substring(0, phIndex));
+        phIndex++;
+        setTimeout(typePlaceholder, 100);
+    } else {
+        setTimeout(() => { phIndex = 0; typePlaceholder(); }, 2000);
+    }
+}
+typePlaceholder();
+
+// Модальное окно
+function openAgreement() { document.getElementById("agreementModal").classList.add("show"); }
+function closeAgreement() { document.getElementById("agreementModal").classList.remove("show"); }
+</script>
+</body>
+</html>
